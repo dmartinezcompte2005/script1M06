@@ -84,14 +84,14 @@ set var=0
 goto inicio
 
 :op4
-echo. Has elegido la opcion No. 4 >> "%logfile%"
-echo. Mostrando archivos .txt generados... >> "%logfile%"
+echo. Has elegido la opcion No. 4
+echo. Mostrando archivos .txt generados... 
 :: Mostrar archivos .txt
 dir "%logdir%\*.txt" /S
-echo. Borrando archivos .txt generados... >> "%logfile%"
+echo. Borrando archivos .txt generados... 
 :: Borrar archivos .txt de forma recursiva
 del /S /Q "%logdir%\*.txt"
-echo. Archivos .txt borrados con éxito. >> "%logfile%"
+echo. Archivos .txt borrados con éxito. 
 pause
 set var=0
 goto inicio
