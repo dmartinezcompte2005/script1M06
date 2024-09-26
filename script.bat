@@ -51,63 +51,50 @@ if "%var%"=="5" goto salir
 echo. El numero "%var%" no es una opcion valida, por favor intente de nuevo.
 echo.
 pause
-echo.
-goto:inicio
+set var=0
+goto inicio
 
 :op1
-    echo. Has elegido la opcion No. 1 >> "%logfile%"
-    echo. Creando copia de seguridad... >> "%logfile%"
-    :: Aquí iría el código para crear la copia de seguridad
-    echo. Copia de seguridad creada con éxito. >> "%logfile%"
-    pause
-    goto inicio
+echo. Has elegido la opcion No. 1 >> "%logfile%"
+echo. Creando copia de seguridad... >> "%logfile%"
+:: Aquí iría el código para crear la copia de seguridad
+echo. Copia de seguridad creada con éxito. >> "%logfile%"
+pause
+set var=0
+goto inicio
 
 :op2
-    setlocal
-
-        :: Definir el archivo de log y el archivo de usuarios
-        set "logfile=log.txt"
-        set "userfile=usuarios.txt"
-
-        echo. Has elegido la opcion No. 2 >> "%logfile%"
-        echo. Creando usuarios desde el archivo %userfile%... >> "%logfile%"
-
-        :: Leer el archivo de usuarios línea por línea
-        for /f "tokens=1,2 delims=," %%a in (%userfile%) do (
-            set "username=%%a"
-            set "password=%%b"
-            
-            :: Crear el usuario
-            net user %username% %password% /add
-            
-            :: Añadir el usuario al grupo de administradores (opcional)
-            net localgroup Administradores %username% /add
-            
-            :: Registrar en el log
-            echo. Usuario %username% creado con éxito. >> "%logfile%"
-        )
-
-        echo Todos los usuarios han sido creados con éxito.
-        pause
-
-    goto inicio
+echo. Has elegido la opcion No. 2 >> "%logfile%"
+echo. Creando usuario... >> "%logfile%"
+:: Aquí iría el código para crear el usuario
+set /p username=Ingrese el nombre del usuario:
+:: Aquí iría el código para usar el nombre del usuario
+echo. Usuario %username% creado con éxito. >> "%logfile%"
+pause
+set var=0
+goto inicio
 
 :op3
-    echo. Has elegido la opcion No. 3 >> "%logfile%"
-    echo. Modificando tarjeta de red... >> "%logfile%"
-    :: Aquí iría el código para modificar la tarjeta de red
-    echo. Tarjeta de red modificada con éxito. >> "%logfile%"
-    pause
-    goto inicio
+echo. Has elegido la opcion No. 3 >> "%logfile%"
+echo. Modificando tarjeta de red... >> "%logfile%"
+:: Aquí iría el código para modificar la tarjeta de red
+echo. Tarjeta de red modificada con éxito. >> "%logfile%"
+pause
+set var=0
+goto inicio
 
 :op4
-    echo. Has elegido la opcion No. 4 >> "%logfile%"
-    echo. Borrando archivos .log generados... >> "%logfile%"
-    del /Q logs\*.log
-    echo. Archivos .log borrados con éxito. >> "%logfile%"
-    pause
-    goto inicio
+echo. Has elegido la opcion No. 4 >> "%logfile%"
+echo. Borrando archivos .log generados... >> "%logfile%"
+:: Aquí iría el código para borrar los archivos .log
+echo. Archivos .log borrados con éxito. >> "%logfile%"
+pause
+set var=0
+goto inicio
 
 :salir
-    echo. Saliendo del script... >> "%logfile%"
-    exit
+echo Saliendo del script...
+pause
+goto fin
+
+:fin
