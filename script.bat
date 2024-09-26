@@ -63,13 +63,33 @@ goto:inicio
     goto inicio
 
 :op2
-    echo. Has elegido la opcion No. 2 >> "%logfile%"
-    echo. Creando usuario... >> "%logfile%"
-    :: Aquí iría el código para crear el usuario
-    set /p username=Ingrese el nombre del usuario: 
-    :: Simulación de creación de usuario
-    echo. Usuario %username% creado con éxito. >> "%logfile%"
-    pause
+    setlocal
+
+        :: Definir el archivo de log y el archivo de usuarios
+        set "logfile=log.txt"
+        set "userfile=usuarios.txt"
+
+        echo. Has elegido la opcion No. 2 >> "%logfile%"
+        echo. Creando usuarios desde el archivo %userfile%... >> "%logfile%"
+
+        :: Leer el archivo de usuarios línea por línea
+        for /f "tokens=1,2 delims=," %%a in (%userfile%) do (
+            set "username=%%a"
+            set "password=%%b"
+            
+            :: Crear el usuario
+            net user %username% %password% /add
+            
+            :: Añadir el usuario al grupo de administradores (opcional)
+            net localgroup Administradores %username% /add
+            
+            :: Registrar en el log
+            echo. Usuario %username% creado con éxito. >> "%logfile%"
+        )
+
+        echo Todos los usuarios han sido creados con éxito.
+        pause
+
     goto inicio
 
 :op3
