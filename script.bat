@@ -1,10 +1,16 @@
-@ echo off
+@echo off
 
 TITLE Bienvenido %USERNAME% a nuestra primera script del menu
 MODE con:cols=80 lines=40
 
+:: Verificar si se pasó un parámetro
+IF "%1" NEQ "" (
+    SET var=%1
+) ELSE (
+    SET var=0
+)
+
 :inicio
-SET var=0
 cls
 echo -----------------------------------------------------
 echo  %DATE% ^| %TIME%
@@ -17,9 +23,10 @@ echo  5    Salir
 echo -----------------------------------------------------
 echo.
 
-SET /p var= ^> Seleccione una opcion [1-5]:
+IF "%var%"=="0" (
+    SET /p var= ^> Seleccione una opcion [1-5]:
+)
 
-if "%var%"=="0" goto inicio
 if "%var%"=="1" goto op1
 if "%var%"=="2" goto op2
 if "%var%"=="3" goto op3
@@ -41,6 +48,7 @@ goto:inicio
         color 08
     echo.
     pause
+    SET var=0
     goto:inicio
 
 :op2
@@ -51,6 +59,7 @@ goto:inicio
         color 09
     echo.
     pause
+    SET var=0
     goto:inicio
 
 :op3
@@ -61,6 +70,7 @@ goto:inicio
         color 0A
     echo.
     pause
+    SET var=0
     goto:inicio
   
 :op4
@@ -71,6 +81,7 @@ goto:inicio
         color 0B
     echo.
     pause
+    SET var=0
     goto:inicio
 
 :salir
