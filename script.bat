@@ -64,14 +64,38 @@ IF "%1" NEQ "" (
         goto inicio
 
 :op2
-        echo. Has elegido la opcion No. 2 >> "%logfile%"
-        echo. Creando usuario... >> "%logfile%"
-    :: Aquí iría el código para crear el usuario
-        set /p username=Ingrese el nombre del usuario:
-    :: Aquí iría el código para usar el nombre del usuario
-        echo. Usuario %username% creado con éxito. >> "%logfile%"
-        pause
-        set var=0
+    echo. Has elegido la opcion No. 2 >> "%logfile%"
+    echo. Creando usuarios... >> "%logfile%"
+
+    :: Leer usuarios y contraseñas desde el archivo
+    setlocal enabledelayedexpansion
+    set /a line=0
+
+    :: Usar ruta relativa para acceder al archivo usuarios.txt
+    set "userfile=%~dp0usuario.txt"
+
+    for /f "usebackq delims=" %%a in ("%userfile%") do (
+        set /a line+=1
+        if !line! lss 2 (
+            set username=%%a
+        ) else (
+            set password=%%a
+            :: Crear el usuario
+            net user "!username!" "!password!" /add >> "%logfile%" 2>&1
+            if !errorlevel! equ 0 (
+                echo. Usuario !username! creado con éxito. >> "%logfile%"
+            ) else (
+                echo. Error al crear el usuario !username!. >> "%logfile%"
+            )
+            :: Reiniciar el contador después de cada par
+            set username=
+            set password=
+            set /a line=0
+        )
+    )
+
+    pause
+    set var=0
     goto inicio
 
 :op3
