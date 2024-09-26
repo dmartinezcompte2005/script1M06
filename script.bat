@@ -1,5 +1,19 @@
 @echo off
 
+:: Obtener la fecha y hora actuales para el nombre del archivo de log en horario español
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set datetime=%%I
+set datetime=%datetime:~0,4%%datetime:~4,2%%datetime:~6,2%_%datetime:~8,2%%datetime:~10,2%%datetime:~12,2%
+set logdir=logs
+set logfile=%logdir%\log_%datetime%.txt
+
+:: Verificar si la carpeta de logs existe, si no, crearla
+IF NOT EXIST "%logdir%" (
+    mkdir "%logdir%"
+)
+
+:: Crear el archivo de log
+echo Archivo de log creado el %date% a las %time% > "%logfile%"
+
 TITLE Bienvenido %USERNAME% a nuestra primera script del menu
 MODE con:cols=80 lines=40
 
@@ -15,10 +29,10 @@ cls
 echo -----------------------------------------------------
 echo  %DATE% ^| %TIME%
 echo -----------------------------------------------------
-echo  1    Opcion 1  
-echo  2    Opcion 2  
-echo  3    Opcion 3  
-echo  4    Opcion 4   
+echo  1    Crear copia de seguridad  
+echo  2    Crear usuario
+echo  3    Modificar targeta de red  
+echo  4    Borrar archivos .log generados
 echo  5    Salir
 echo -----------------------------------------------------
 echo.
@@ -41,48 +55,39 @@ echo.
 goto:inicio
 
 :op1
-    echo.
-    echo. Has elegido la opcion No. 1
-    echo.
-        ::Aquí van las líneas de comando de tu opción
-        color 08
-    echo.
+    echo. Has elegido la opcion No. 1 >> "%logfile%"
+    echo. Creando copia de seguridad... >> "%logfile%"
+    :: Aquí iría el código para crear la copia de seguridad
+    echo. Copia de seguridad creada con éxito. >> "%logfile%"
     pause
-    SET var=0
-    goto:inicio
+    goto inicio
 
 :op2
-    echo.
-    echo. Has elegido la opcion No. 2
-    echo.
-        ::Aquí van las líneas de comando de tu opción
-        color 09
-    echo.
+    echo. Has elegido la opcion No. 2 >> "%logfile%"
+    echo. Creando usuario... >> "%logfile%"
+    :: Aquí iría el código para crear el usuario
+    set /p username=Ingrese el nombre del usuario: 
+    :: Simulación de creación de usuario
+    echo. Usuario %username% creado con éxito. >> "%logfile%"
     pause
-    SET var=0
-    goto:inicio
+    goto inicio
 
 :op3
-    echo.
-    echo. Has elegido la opcion No. 3
-    echo.
-        ::Aquí van las líneas de comando de tu opción
-        color 0A
-    echo.
+    echo. Has elegido la opcion No. 3 >> "%logfile%"
+    echo. Modificando tarjeta de red... >> "%logfile%"
+    :: Aquí iría el código para modificar la tarjeta de red
+    echo. Tarjeta de red modificada con éxito. >> "%logfile%"
     pause
-    SET var=0
-    goto:inicio
-  
+    goto inicio
+
 :op4
-    echo.
-    echo. Has elegido la opcion No. 4
-    echo.
-        ::Aquí van las líneas de comando de tu opción
-        color 0B
-    echo.
+    echo. Has elegido la opcion No. 4 >> "%logfile%"
+    echo. Borrando archivos .log generados... >> "%logfile%"
+    del /Q logs\*.log
+    echo. Archivos .log borrados con éxito. >> "%logfile%"
     pause
-    SET var=0
-    goto:inicio
+    goto inicio
 
 :salir
-    @cls&exit
+    echo. Saliendo del script... >> "%logfile%"
+    exit
