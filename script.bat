@@ -59,7 +59,7 @@ IF "%1" NEQ "" (
         echo. Creando copia de seguridad... >> "%logfile%"
     :: Aquí iría el código para crear la copia de seguridad
 
-        @echo off
+
 setlocal enabledelayedexpansion
 
 REM Crear un timestamp para el archivo ZIP y log (formato YYYYMMDD-HHMMSS)
