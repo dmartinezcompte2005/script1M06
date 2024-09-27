@@ -1,0 +1,5 @@
+C:\Users\%%\Documents
+C:\Users\%%\Downloads
+C:\Users\%%\Pictures
+C:\Users\%%\Desktop
+C:\Users\%%\Videos
