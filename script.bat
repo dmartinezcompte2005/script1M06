@@ -73,7 +73,7 @@ if not exist "%log_dir%" (
 )
 
 REM Definir el nombre del archivo de log en el directorio logs
-set log_file=%log_dir%\log_%timestamp%.txt
+set log_file=%log_dir%\log_backup_%timestamp%.txt
 
 REM Definir el nombre del archivo ZIP
 set zip_file=backup_%timestamp%.zip
