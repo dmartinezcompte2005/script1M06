@@ -58,6 +58,73 @@ IF "%1" NEQ "" (
         echo. Has elegido la opcion No. 1 >> "%logfile%"
         echo. Creando copia de seguridad... >> "%logfile%"
     :: Aquí iría el código para crear la copia de seguridad
+
+        @echo off
+setlocal enabledelayedexpansion
+
+REM Crear un timestamp para el archivo ZIP y log (formato YYYYMMDD-HHMMSS)
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set datetime=%%I
+set timestamp=%datetime:~0,8%-%datetime:~8,6%
+
+REM Definir la carpeta de logs y crearla si no existe
+set log_dir=%~dp0logs
+if not exist "%log_dir%" (
+    mkdir "%log_dir%"
+)
+
+REM Definir el nombre del archivo de log en el directorio logs
+set log_file=%log_dir%\log_%timestamp%.txt
+
+REM Definir el nombre del archivo ZIP
+set zip_file=backup_%timestamp%.zip
+
+REM Definir la carpeta temporal para la copia de seguridad
+set backup_dir=%~dp0backup_temp
+
+REM Crear la carpeta temporal
+if not exist "%backup_dir%" (
+    mkdir "%backup_dir%"
+)
+
+REM Crear el archivo de log
+echo Inicio del backup: %date% %time% > %log_file%
+
+REM Obtener el nombre del usuario actual
+set current_user=%USERNAME%
+
+REM Leer el archivo de rutas.txt, reemplazar %% por el usuario actual y hacer la copia de seguridad
+for /f "tokens=1" %%A in (rutas.txt) do (
+    REM Reemplazar %% por el nombre del usuario actual
+    set source=%%A
+    set source=!source:%%%%=%current_user%!
+
+    echo Copiando de !source! a %backup_dir%\%%~nxA >> %log_file%
+    xcopy "!source!" "%backup_dir%\%%~nxA" /E /I /Y /H /C >> %log_file% 2>&1
+    if !errorlevel! neq 0 (
+        echo Error al copiar de !source! a %backup_dir%\%%~nxA >> %log_file%
+    ) else (
+        echo Copia exitosa de !source! a %backup_dir%\%%~nxA >> %log_file%
+    )
+)
+
+REM Comprimir la carpeta de respaldo en un archivo ZIP
+powershell Compress-Archive -Path "%backup_dir%\*" -DestinationPath "%~dp0%zip_file%"
+
+REM Verificar si se creó correctamente el archivo ZIP
+if exist "%~dp0%zip_file%" (
+    echo Archivo ZIP creado exitosamente: %~dp0%zip_file% >> %log_file%
+) else (
+    echo Error al crear el archivo ZIP >> %log_file%
+)
+
+REM Eliminar la carpeta temporal de respaldo
+rmdir /S /Q "%backup_dir%"
+
+REM Finalizar el proceso
+echo Backup completado: %date% %time% >> %log_file%
+echo Backup finalizado. Archivo de log creado en: %log_file%
+endlocal
+
         echo. Copia de seguridad creada con éxito. >> "%logfile%"
         pause
         set var=0
@@ -138,7 +205,6 @@ goto inicio
 
 :salir
     echo Saliendo del script...
-    pause
     goto fin
 
 :fin
