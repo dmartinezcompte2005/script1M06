@@ -1,0 +1,6 @@
+/home/%%/Documentos
+/home/%%/Descargas
+/home/%%/Imagenes
+/home/%%/Musica
+/home/%%/Videos
+/home/%%/Escritorio
