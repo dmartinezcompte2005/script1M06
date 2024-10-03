@@ -41,7 +41,11 @@ crear_usuario() {
     echo
 }
 
-modificar_red(){
+modificar_red() {
+    # Definir la carpeta y el archivo de log
+    logdir="$(dirname "$0")/log"
+    mkdir -p "$logdir"
+    logfile="$logdir/$(date +'%Y-%m-%d_%H-%M-%S').log"
 
     # Listar interfaces de red disponibles
     echo "Interfaces de red disponibles:"
@@ -53,13 +57,18 @@ modificar_red(){
     read -p "Introduce la máscara de red (CIDR, por ejemplo, 24): " NETMASK
     read -p "Introduce la puerta de enlace: " GATEWAY
     read -p "Introduce el DNS: " DNS
-    echo "Se ha configurat la xarxa"  >> "$logfile"
+
+    # Registrar la configuración solicitada
+    echo "$(date): Configuración solicitada - Interfaz: $INTERFACE, IP: $IP_ADDRESS, Máscara: $NETMASK, Puerta de enlace: $GATEWAY, DNS: $DNS" >> "$logfile"
 
     # Configurar la interfaz de red temporalmente
     sudo ip addr flush dev $INTERFACE
     sudo ip addr add $IP_ADDRESS/$NETMASK dev $INTERFACE
     sudo ip link set $INTERFACE up
     sudo ip route add default via $GATEWAY
+
+    # Registrar la configuración temporal aplicada
+    echo "$(date): Configuración temporal aplicada a la interfaz $INTERFACE" >> "$logfile"
 
     # Configurar DNS temporalmente
     echo "nameserver $DNS" | sudo tee /etc/resolv.conf > /dev/null
@@ -77,8 +86,12 @@ EOT
     # Reiniciar la interfaz de red para aplicar la configuración persistente
     sudo ifdown $INTERFACE && sudo ifup $INTERFACE
 
+    # Registrar la configuración persistente aplicada
+    echo "$(date): Configuración persistente aplicada y guardada para la interfaz $INTERFACE" >> "$logfile"
+
     echo "Configuración de red aplicada y guardada."
 }
+
 
 
 while true; do
