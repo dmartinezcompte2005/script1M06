@@ -43,44 +43,43 @@ crear_usuario() {
 
 modificar_red(){
 
+  modificar_red() {
     # Listar interfaces de red disponibles
-echo "Interfaces de red disponibles:"
-ip link show | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2}'
+    echo "Interfaces de red disponibles:"
+    ip link show | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2}'
+
     # Solicitar la configuración de red al usuario
-read -p "Introduce el nombre de la interfaz de red: " INTERFACE
-read -p "Introduce la dirección IP: " IP_ADDRESS
-read -p "Introduce la máscara de red (CIDR, por ejemplo, 24): " NETMASK
-read -p "Introduce la puerta de enlace: " GATEWAY
-read -p "Introduce el DNS: " DNS
+    read -p "Introduce el nombre de la interfaz de red: " INTERFACE
+    read -p "Introduce la dirección IP: " IP_ADDRESS
+    read -p "Introduce la máscara de red (CIDR, por ejemplo, 24): " NETMASK
+    read -p "Introduce la puerta de enlace: " GATEWAY
+    read -p "Introduce el DNS: " DNS
 
-# Configurar la interfaz de red
-sudo ip addr flush dev $INTERFACE
-sudo ip addr add $IP_ADDRESS/$NETMASK dev $INTERFACE
-sudo ip link set $INTERFACE up
-sudo ip route add default via $GATEWAY
+    # Configurar la interfaz de red temporalmente
+    sudo ip addr flush dev $INTERFACE
+    sudo ip addr add $IP_ADDRESS/$NETMASK dev $INTERFACE
+    sudo ip link set $INTERFACE up
+    sudo ip route add default via $GATEWAY
 
-# Configurar DNS
-echo "nameserver $DNS" | sudo tee /etc/resolv.conf > /dev/null
+    # Configurar DNS temporalmente
+    echo "nameserver $DNS" | sudo tee /etc/resolv.conf > /dev/null
 
-# Hacer que la configuración sea persistente
-cat <<EOT | sudo tee /etc/netplan/01-netcfg.yaml
-network:
-  version: 2
-  ethernets:
-    $INTERFACE:
-      addresses:
-        - $IP_ADDRESS/$NETMASK
-      gateway4: $GATEWAY
-      nameservers:
-        addresses:
-          - $DNS
+    # Hacer que la configuración sea persistente en /etc/network/interfaces
+    sudo tee /etc/network/interfaces.d/$INTERFACE.cfg > /dev/null <<EOT
+auto $INTERFACE
+iface $INTERFACE inet static
+    address $IP_ADDRESS
+    netmask $NETMASK
+    gateway $GATEWAY
+    dns-nameservers $DNS
 EOT
 
-# Aplicar la configuración de netplan
-sudo netplan apply
+    # Reiniciar la interfaz de red para aplicar la configuración persistente
+    sudo ifdown $INTERFACE && sudo ifup $INTERFACE
 
-echo "Configuración de red aplicada y guardada."
+    echo "Configuración de red aplicada y guardada."
 }
+
 
 while true; do
     clear
