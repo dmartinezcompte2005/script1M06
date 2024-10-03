@@ -2,6 +2,25 @@
 
 logfile="log.txt" # Nombre del archivo de registro
 userfile="usuario.txt" # Archivo que contiene los usuarios y contraseñas
+# Función para asegurarse de que el archivo de log exista
+verificar_logfile() {
+    if [ ! -f "$logfile" ]; then
+        touch "$logfile" # Crea el archivo de log si no existe
+        echo "Archivo de log creado: $logfile"
+    fi
+}
+
+borrar_logs() {
+    verificar_logfile  # Asegurarse de que el archivo de log exista
+    echo "Borrando el contenido del archivo de log..."
+    > "$logfile" # Esto limpia el contenido del archivo sin eliminarlo
+    if [ $? -eq 0 ]; then
+        echo "Contenido del archivo de log borrado con éxito."
+    else
+        echo "Error al borrar el contenido del archivo de log."
+    fi
+    echo
+}
 
 crear_usuario() {
     line=0
