@@ -45,7 +45,7 @@ modificar_red() {
     # Definir la carpeta y el archivo de log
     logdir="$(dirname "$0")/logs"
     mkdir -p "$logdir"
-    logfile="$logdir/$(date +'%Y-%m-%d_%H-%M-%S').log"
+    logfile="$logdir/$(date +'%Y-%m-%d_%H-%M-%S').txt"
 
     # Listar interfaces de red disponibles
     echo "Interfaces de red disponibles:"
