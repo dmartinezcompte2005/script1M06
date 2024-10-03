@@ -48,11 +48,12 @@ modificar_red(){
     ip link show | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2}'
 
     # Solicitar la configuración de red al usuario
-    read -p "Introduce el nombre de la interfaz de red: " INTERFACE
-    read -p "Introduce la dirección IP: " IP_ADDRESS
+    read -p "Introduce el nombre de la interfaz de red: " INTERFACE  
+    read -p "Introduce la dirección IP: " IP_ADDRESS 
     read -p "Introduce la máscara de red (CIDR, por ejemplo, 24): " NETMASK
     read -p "Introduce la puerta de enlace: " GATEWAY
     read -p "Introduce el DNS: " DNS
+    echo "Se ha configurat la xarxa"  >> "$logfile"
 
     # Configurar la interfaz de red temporalmente
     sudo ip addr flush dev $INTERFACE
