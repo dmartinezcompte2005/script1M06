@@ -41,6 +41,47 @@ crear_usuario() {
     echo
 }
 
+modificar_red(){
+
+    # Listar interfaces de red disponibles
+echo "Interfaces de red disponibles:"
+ip link show | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2}'
+    # Solicitar la configuración de red al usuario
+read -p "Introduce el nombre de la interfaz de red: " INTERFACE
+read -p "Introduce la dirección IP: " IP_ADDRESS
+read -p "Introduce la máscara de red (CIDR, por ejemplo, 24): " NETMASK
+read -p "Introduce la puerta de enlace: " GATEWAY
+read -p "Introduce el DNS: " DNS
+
+# Configurar la interfaz de red
+sudo ip addr flush dev $INTERFACE
+sudo ip addr add $IP_ADDRESS/$NETMASK dev $INTERFACE
+sudo ip link set $INTERFACE up
+sudo ip route add default via $GATEWAY
+
+# Configurar DNS
+echo "nameserver $DNS" | sudo tee /etc/resolv.conf > /dev/null
+
+# Hacer que la configuración sea persistente
+cat <<EOT | sudo tee /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    $INTERFACE:
+      addresses:
+        - $IP_ADDRESS/$NETMASK
+      gateway4: $GATEWAY
+      nameservers:
+        addresses:
+          - $DNS
+EOT
+
+# Aplicar la configuración de netplan
+sudo netplan apply
+
+echo "Configuración de red aplicada y guardada."
+}
+
 while true; do
     clear
     echo "----------------------------------------------------------------------"
@@ -71,6 +112,7 @@ while true; do
         3) 
             echo "Opción 3: Modificar tarjeta de red"
             # Aquí puedes llamar a la función correspondiente o script
+            modificar_red
             ;;
         4) 
             echo "Opción 4: Borrar archivos del log"
