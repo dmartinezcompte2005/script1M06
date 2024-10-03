@@ -43,7 +43,7 @@ crear_usuario() {
 
 modificar_red() {
     # Definir la carpeta y el archivo de log
-    logdir="$(dirname "$0")/log"
+    logdir="$(dirname "$0")/logs"
     mkdir -p "$logdir"
     logfile="$logdir/$(date +'%Y-%m-%d_%H-%M-%S').log"
 
