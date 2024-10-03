@@ -208,6 +208,7 @@ echo "Backup finalizado. Archivo de log creado en: $log_file"
         4) 
             echo "Opción 4: Borrar archivos del log"
             # Aquí puedes llamar a la función correspondiente o script
+            borrar_logs
             ;;
         5) 
             echo "Saliendo..."
