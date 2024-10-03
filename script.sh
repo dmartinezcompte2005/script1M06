@@ -43,7 +43,6 @@ crear_usuario() {
 
 modificar_red(){
 
-  modificar_red() {
     # Listar interfaces de red disponibles
     echo "Interfaces de red disponibles:"
     ip link show | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2}'
