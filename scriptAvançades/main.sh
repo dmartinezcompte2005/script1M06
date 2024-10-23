@@ -8,7 +8,7 @@ echo "2. "
 echo "3. "
 echo "4. "
 echo "5. Salir"
-redad -p "Indica quina opcio vols triar: " opcio
+read -p "Indica quina opcio vols triar: " opcio
 
 case "$opcio" in
 
