@@ -14,10 +14,10 @@ case "$opcio" in
 
 1)
 	# Introduim el nom del primer fitxer
-	primer;;
+	bash gestio_usuaris.sh;;
 2)
 	# Introduim el nom del segon fitxer
-	segona;;
+	bash gestio_backups.sh;;
 3)
 	# Introduim el nom del tercer fitxer
 	tercer;;
