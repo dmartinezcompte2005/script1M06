@@ -4,7 +4,7 @@ clear
 
 echo "BENVINGUTS AL NOSTRE SCRIPT AVANÇAT"
 echo "1. Gestio d'usuaris"
-echo "2. "
+echo "2. Gestio de copias de seguretat"
 echo "3. "
 echo "4. "
 echo "5. Salir"
