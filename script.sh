@@ -15,40 +15,34 @@ borrar_txt_logs() {
 }
 
 crear_usuario() {
-    line=0
     echo "Creando usuarios..." >> "$logfile"
 
-    # Leer usuarios y contraseñas desde el archivo
-    while IFS= read -r line_content; do
-        line=$((line + 1))
+    # Leer usuarios y contraseñas desde el archivo, asumiendo el formato "usuario:contraseña"
+    while IFS=: read -r username password; do
+        if [ -z "$username" ] || [ -z "$password" ]; then
+            echo "Formato incorrecto en el archivo de usuarios." >> "$logfile"
+            echo "Formato incorrecto en el archivo de usuarios."
+            continue
+        fi
 
-        if [ "$line" -eq 1 ]; then
-            username="$line_content"
-        elif [ "$line" -eq 2 ]; then
-            password="$line_content"
-
-            # Comprobar si el usuario ya existe
-            if id "$username" &>/dev/null; then
-                echo "El usuario $username ya existe." >> "$logfile"
-                echo "El usuario $username ya existe."
+        # Comprobar si el usuario ya existe
+        if id "$username" &>/dev/null; then
+            echo "El usuario $username ya existe." >> "$logfile"
+            echo "El usuario $username ya existe."
+        else
+            # Crear el usuario y establecer la contraseña
+            if useradd "$username" >> "$logfile" 2>&1; then
+                echo "$username:$password" | chpasswd
+                echo "Usuario $username creado con éxito." >> "$logfile"
+                echo "Usuario $username creado con éxito."
             else
-                # Crear el usuario
-                if useradd "$username" -p "$(openssl passwd -1 "$password")" >> "$logfile" 2>&1; then
-                    echo "Usuario $username creado con éxito." >> "$logfile"
-                    echo "Usuario $username creado con éxito."
-                else
-                    echo "Error al crear el usuario $username." >> "$logfile"
-                    echo "Error al crear el usuario $username."
-                fi
+                echo "Error al crear el usuario $username." >> "$logfile"
+                echo "Error al crear el usuario $username."
             fi
-
-            # Reiniciar el contador después de cada par
-            username=""
-            password=""
-            line=0
         fi
     done < "$userfile"
 
+    echo "Proceso de creación de usuarios finalizado."
     echo
 }
 
